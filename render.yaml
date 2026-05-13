@@ -1,0 +1,58 @@
+# Inventory Reservation System — Render Blueprint: Postgres + Redis (Key Value) + Node API + static Vite UI.
+# Key Value uses internal-only networking (ipAllowList: []). API must run on Render in the same account/region.
+#
+# Set Static Site VITE_API_BASE to your API public URL, e.g. https://irs-api.onrender.com
+#
+# See RENDER.md for deploying services separately.
+
+version: "1"
+
+databases:
+  - name: irs-postgres
+    databaseName: inventory
+    user: inventory
+
+services:
+  - type: keyvalue
+    name: irs-redis
+    region: oregon
+    plan: starter
+    maxmemoryPolicy: noeviction
+    # Internal-only; web service reaches this via private connectionString on REDIS_URL
+    ipAllowList: []
+
+  - type: web
+    name: irs-api
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm ci --include=dev && npm run render:build:api
+    startCommand: npm run render:start:api
+    preDeployCommand: npm run render:migrate:api
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: irs-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: irs-redis
+          type: keyvalue
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: RESERVATION_TTL_SECONDS
+        value: "120"
+      - key: DEMO_ROUTES_ENABLED
+        value: "0"
+
+  - type: web
+    name: irs-web
+    runtime: static
+    region: oregon
+    buildCommand: npm ci --include=dev && npm run render:build:web
+    staticPublishPath: ./web-client/dist
+    envVars:
+      - key: VITE_API_BASE
+        sync: false

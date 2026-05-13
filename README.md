@@ -34,6 +34,15 @@ Reference diagram (illustrative — tune VPC, subnets, and security groups for p
 
 Local-first inventory and reservations with **PostgreSQL** (source of truth), **Redis** (Lua atomic guard and TTL holds), **Express + TypeScript**, and a **premium ecommerce** React (Vite + Tailwind) UI.
 
+## Design decisions
+
+- **PostgreSQL plus Redis, not one or the other** — The catalog, reservation rows, and inventory ledger stay in Postgres so you get durable constraints, auditability, and straightforward reporting. Redis owns the hot path: a Lua script performs compare-and-decrement with a TTL hold in one round trip, which serializes flash-sale contention without leaning on row locks for every browser. After mutations (or on startup), counters are reconciled so Redis and the DB-backed availability formula stay aligned.
+- **Optimistic versioning on confirm** — Conflicts on `Product.version` surface as explicit failures instead of silent last-write wins; reserves stay fast on Redis, while the money-moving confirm path remains safe in a transaction.
+- **Timeouts, retries, and idempotency (conceptual)** — Clients should treat **reserve** as a command that can time out while the server still applied it: retries use the same logical reservation id (or a dedupe key) where the API allows it so a duplicate attempt does not create a second hold. Confirm and cancel should be safe to retry when the server exposes stable ids and returns the same outcome for duplicates; the combination of Redis hold keys and Postgres state machine makes "exactly-once" user-visible effects easier to reason about than at-least-once alone.
+- **Expiry as a first-class transition** — Holds expire via TTL; the app transitions reservations to `EXPIRED`, writes ledger rows, and reconciles stock so inventory cannot leak when clients abandon checkout.
+
+**Deploy on Render (Postgres + Redis + API + static UI, or split services):** see **[RENDER.md](RENDER.md)** and root **`render.yaml`**.
+
 ## Quick start
 
 ```bash

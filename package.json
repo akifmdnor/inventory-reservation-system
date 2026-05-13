@@ -11,6 +11,10 @@
     "docker:up": "docker compose up -d --build",
     "dev": "concurrently -n web,server -c cyan,magenta \"npm run dev -w web-client\" \"npm run dev -w server\"",
     "build": "npm run build -w server && npm run build -w web-client",
+    "render:build:api": "npm run build -w server",
+    "render:start:api": "npm run start -w server",
+    "render:migrate:api": "npm run db:migrate -w server",
+    "render:build:web": "npm run build -w web-client",
     "test": "npm run test -w server",
     "test:integration": "npm run test:integration -w server",
     "test:watch": "npm run test:watch -w server"
