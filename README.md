@@ -58,7 +58,20 @@ Local-first inventory and reservations with **PostgreSQL** (source of truth), **
 ```bash
 cd inventory-reservation-system
 npm install
-cp server/.env.example server/.env
+```
+
+Create `server/.env` (local values):
+
+```env
+DATABASE_URL="postgresql://inventory:inventory@localhost:5434/inventory_reservation?schema=public"
+REDIS_URL="redis://localhost:6379"
+PORT=3002
+NODE_ENV=development
+RESERVATION_TTL_SECONDS=120
+DEMO_ROUTES_ENABLED=1
+```
+
+```bash
 npm run db:up
 cd server && npx prisma migrate deploy && npx prisma db seed && cd ..
 npm run dev
