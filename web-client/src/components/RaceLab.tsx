@@ -13,7 +13,7 @@ export function RaceLab(props: { productId: string | null }) {
     setResult(null);
     try {
       const out = await irisApi.demoRace(productId, 500);
-      setResult(`500 parallel reserves on a single unit: ${out.successes} success, ${out.failures} failures (expected 1 / 499).`);
+      setResult(`500 simultaneous hold requests on one unit: ${out.successes} succeeded, ${out.failures} declined (only one should win).`);
     } catch (e) {
       setResult(e instanceof Error ? e.message : "Race failed");
     } finally {
@@ -23,11 +23,11 @@ export function RaceLab(props: { productId: string | null }) {
 
   return (
     <div className="glass-panel rounded-2xl p-6">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-iris-gold/80">Stress console</p>
-      <h3 className="font-display mt-3 text-xl text-iris-text">500-request oversell probe</h3>
+      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-teal-700/90">Load test</p>
+      <h3 className="mt-3 text-lg font-semibold tracking-tight text-iris-text">Parallel reservation check</h3>
       <p className="mt-2 text-xs leading-relaxed text-iris-muted">
-        Server resets catalog inventory, isolates this SKU to <span className="font-semibold text-iris-text">one</span>{" "}
-        sellable unit, re-syncs Redis from PostgreSQL, then fires 500 overlapping Lua-guarded reservations.
+        The demo resets this item to a single available unit, then fires 500 overlapping reservation attempts. You
+        should see exactly one success.
       </p>
       <button
         type="button"
@@ -35,7 +35,7 @@ export function RaceLab(props: { productId: string | null }) {
         disabled={!productId || running}
         onClick={() => void run()}
       >
-        {running ? "Running…" : "Run parallel burst"}
+        {running ? "Running…" : "Run 500 parallel attempts"}
       </button>
       {result && <p className="mt-4 text-sm text-iris-text/90">{result}</p>}
     </div>

@@ -1,18 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
-  --font-sans: "Inter", ui-sans-serif, system-ui;
-  --color-iris-bg: #0c0b0a;
-  --color-iris-surface: #161412;
-  --color-iris-elevated: #1e1c1a;
-  --color-iris-border: rgba(245, 240, 232, 0.12);
-  --color-iris-muted: #9c9690;
-  --color-iris-text: #f5f0e8;
-  --color-iris-gold: #c9a962;
-  --color-iris-gold-deep: #8a7038;
-  --color-iris-rose: #c4a4a1;
-  --shadow-iris-card: 0 24px 80px rgba(0, 0, 0, 0.55);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* Light storefront */
+  --color-iris-bg: #f4f4f5;
+  --color-iris-surface: #ffffff;
+  --color-iris-elevated: #fafafa;
+  --color-iris-border: #e4e4e7;
+  --color-iris-muted: #71717a;
+  --color-iris-text: #18181b;
+  --color-iris-accent: #0f766e;
+  --color-iris-warn: #dc2626;
+  --shadow-iris-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 24px rgba(0, 0, 0, 0.06);
 }
 
 body {
@@ -20,61 +19,30 @@ body {
   background: var(--color-iris-bg);
   color: var(--color-iris-text);
   background-image:
-    radial-gradient(ellipse 120% 80% at 50% -30%, rgba(201, 169, 98, 0.09), transparent 55%),
-    radial-gradient(ellipse 60% 50% at 100% 0%, rgba(196, 164, 161, 0.06), transparent 45%);
-}
-
-.font-display {
-  font-family: var(--font-display);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(20, 184, 166, 0.08), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(244, 244, 245, 1), transparent 50%);
 }
 
 .glass-panel {
-  background: linear-gradient(145deg, rgba(30, 28, 26, 0.92), rgba(20, 18, 16, 0.88));
+  background: var(--color-iris-surface);
   border: 1px solid var(--color-iris-border);
+  border-radius: 1rem;
   box-shadow: var(--shadow-iris-card);
-  backdrop-filter: blur(20px);
-}
-
-.shimmer-border {
-  position: relative;
-}
-.shimmer-border::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    120deg,
-    rgba(201, 169, 98, 0.55),
-    rgba(245, 240, 232, 0.08),
-    rgba(201, 169, 98, 0.35)
-  );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-semibold tracking-wide transition;
-  background: linear-gradient(135deg, #d4bc6a, #a68b3d);
-  color: #1a1510;
-  box-shadow: 0 12px 32px rgba(201, 169, 98, 0.25);
+  @apply inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-sm font-semibold transition;
+  background: var(--color-iris-text);
+  color: var(--color-iris-surface);
 }
 .btn-primary:hover {
-  filter: brightness(1.06);
+  opacity: 0.92;
 }
 .btn-primary:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .btn-ghost {
-  @apply rounded-full border border-white/15 px-5 py-2 text-sm font-medium text-iris-text/90 transition hover:border-iris-gold/50 hover:text-iris-gold;
+  @apply rounded-lg border border-iris-border bg-iris-surface px-4 py-2 text-sm font-medium text-iris-text transition hover:bg-iris-bg;
 }
