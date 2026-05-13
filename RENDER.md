@@ -2,7 +2,17 @@
 
 Stack: **PostgreSQL**, **Redis-compatible Render Key Value**, **Node API**, **static Vite storefront**. The repo is an **npm workspaces** monorepo (`server`, `web-client`).
 
-## One-shot: Blueprint (`render.yaml`)
+## One Render Web Service (API + SPA, single deploy)
+
+| Field | Value |
+|--------|--------|
+| **Root Directory** | *(empty)* — monorepo root |
+| **Build Command** | `npm ci && npm run build` |
+| **Start Command** | `npm run start -w server` |
+
+In **production**, Express serves **`web-client/dist`** after `npm run build`, so UI and **`/api`** use the same host. Unset **`VITE_API_BASE`** when building so fetches use relative **`/api`**.
+
+---
 
 1. **New** → **Blueprint** → connect the repo whose root is **`inventory-reservation-system/`** (or set the subdirectory if the repo root is higher).
 2. Render provisions **irs-postgres**, **irs-redis** (Key Value, internal-only), **irs-api**, **irs-web**.
@@ -18,7 +28,15 @@ Stack: **PostgreSQL**, **Redis-compatible Render Key Value**, **Node API**, **st
 | Start API | `npm run render:start:api` |
 | Build UI | `npm ci --include=dev && npm run render:build:web` |
 
-### Environment variables (API)
+---
+
+## Frontend: use a **Static Site** (recommended)
+
+Deploy the Vite storefront as a **Static Site** (build + publish `web-client/dist`), not a Web Service.
+
+If the UI is a **Web Service**, you will see **“Application exited early”** after a successful build: **`vite build` exits** and nothing listens on **`PORT`**. Either switch to a **Static Site**, or set **Start Command** to **`npm run render:start:web`** (repo root) or **`npm start`** (Root Directory = `web-client`). That serves **`dist`** via **`vite preview`** on **`PORT`**.
+
+---
 
 | Key | Notes |
 |-----|--------|

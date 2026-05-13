@@ -10,6 +10,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src")
     }
   },
+  preview: {
+    host: true,
+    port: Number(process.env.PORT) || 4174
+  },
   server: {
     port: 5174,
     proxy: {

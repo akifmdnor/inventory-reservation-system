@@ -9,6 +9,7 @@ import { createApiRouter } from "./routes/api.js";
 import { InventoryReservationService } from "./services/InventoryReservationService.js";
 import { RedisStockGuard } from "./services/RedisStockGuard.js";
 import { ReservationExpiryWorker } from "./workers/ReservationExpiryWorker.js";
+import { mountWebClientDistIfPresent } from "./serveWebDist.js";
 
 export type AppServices = {
   service: InventoryReservationService;
@@ -38,6 +39,7 @@ export async function createApp(): Promise<{ app: express.Express } & AppService
   app.use(cors({ origin: true, credentials: true }));
   app.use(express.json());
   app.use("/api", createApiRouter(service, { demoRoutesEnabled: config.demoRoutesEnabled }));
+  mountWebClientDistIfPresent(app);
   app.use(errorHandler);
 
   return { app, service, expiryWorker };
