@@ -21,7 +21,9 @@ export function ShopPage() {
     () =>
       error ? (
         <div className="mb-8">
-          <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</p>
+          <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            {error}
+          </p>
         </div>
       ) : null,
     [error]
@@ -41,11 +43,14 @@ export function ShopPage() {
           <summary className="cursor-pointer list-none text-sm font-semibold text-iris-text marker:content-none [&::-webkit-details-marker]:hidden">
             <span className="inline-flex items-center gap-2">
               Demo tools
-              <span className="text-xs font-normal text-iris-muted">(stock breakdown &amp; load test)</span>
+              <span className="text-xs font-normal text-iris-muted">
+                (stock breakdown &amp; load test)
+              </span>
             </span>
           </summary>
           <p className="mt-3 text-xs text-iris-muted">
-            For developers testing the reservation API. Typical shoppers won&apos;t need this section.
+            For developers testing the reservation API. Typical shoppers won&apos;t need this
+            section.
           </p>
           <div className="mt-6 space-y-6 border-t border-iris-border pt-6">
             <ShopToolbar />

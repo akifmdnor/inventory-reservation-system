@@ -35,7 +35,11 @@ describe.skipIf(!run)("inventory integration (Postgres + Redis)", () => {
     await ctx.service.demoFlashSaleSetup(target.id, 1);
     const before = await ctx.service.getAvailability(target.id);
     expect(before.available).toBe(1);
-    const r = await ctx.service.reserve({ productId: target.id, userLabel: "expiry-test", quantity: 1 });
+    const r = await ctx.service.reserve({
+      productId: target.id,
+      userLabel: "expiry-test",
+      quantity: 1
+    });
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     const mid = await ctx.service.getAvailability(target.id);
@@ -55,6 +59,8 @@ describe.skipIf(!run)("inventory integration (Postgres + Redis)", () => {
     expect(r.ok).toBe(true);
     if (!r.ok) return;
     await ctx.service.confirmReservation(r.reservationId);
-    await expect(ctx.service.cancelReservation(r.reservationId)).rejects.toBeInstanceOf(DomainError);
+    await expect(ctx.service.cancelReservation(r.reservationId)).rejects.toBeInstanceOf(
+      DomainError
+    );
   });
 });

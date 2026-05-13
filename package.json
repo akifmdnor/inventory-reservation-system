@@ -19,10 +19,22 @@
     "render:start:web": "npm run start -w web-client",
     "test": "npm run test -w server",
     "test:integration": "npm run test:integration -w server",
-    "test:watch": "npm run test:watch -w server"
+    "test:watch": "npm run test:watch -w server",
+    "test:coverage": "npm run test:coverage -w server",
+    "lint": "eslint server web-client --max-warnings 0",
+    "lint:fix": "eslint server web-client --fix --max-warnings 0",
+    "format": "prettier --write \"server/**/*.{ts,tsx}\" \"web-client/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"server/**/*.{ts,tsx}\" \"web-client/**/*.{ts,tsx}\"",
+    "typecheck": "npm run typecheck -w server && npm run typecheck -w web-client"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "@eslint/js": "^9.39.4",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.5.0",
+    "prettier": "^3.8.3",
+    "typescript-eslint": "^8.59.3"
   },
   "engines": {
     "node": ">=20"

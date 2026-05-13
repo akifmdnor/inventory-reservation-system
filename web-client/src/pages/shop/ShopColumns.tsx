@@ -12,12 +12,15 @@ type ShopInspectorColumnProps = {
 export function ShopInspectorColumn({ focusedId, onFocusedIdChange }: ShopInspectorColumnProps) {
   const { products, availability } = useShopSession();
   const focusedProduct = products.find((p) => p.id === focusedId) ?? null;
-  const panelAvailability = focusedId ? availability[focusedId] ?? null : null;
+  const panelAvailability = focusedId ? (availability[focusedId] ?? null) : null;
 
   return (
     <aside className="flex flex-col gap-6">
       <div>
-        <label className="text-[10px] font-semibold uppercase tracking-[0.2em] text-iris-muted" htmlFor="sku-focus">
+        <label
+          className="text-[10px] font-semibold uppercase tracking-[0.2em] text-iris-muted"
+          htmlFor="sku-focus"
+        >
           Focus product
         </label>
         <select

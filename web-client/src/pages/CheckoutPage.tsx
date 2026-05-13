@@ -8,7 +8,9 @@ import { useCountdown } from "@/hooks/useCountdown";
 import { irisApi } from "@/lib/api";
 
 function formatPrice(cents: number) {
-  return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(cents / 100);
+  return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(
+    cents / 100
+  );
 }
 
 function formatCountdown(seconds: number) {
@@ -19,18 +21,16 @@ function formatCountdown(seconds: number) {
 
 export function CheckoutPage() {
   const navigate = useNavigate();
-  const {
-    products,
-    activeReservation,
-    setActiveReservation,
-    refreshAll
-  } = useShopSession();
+  const { products, activeReservation, setActiveReservation, refreshAll } = useShopSession();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [complete, setComplete] = useState(false);
 
   const product = useMemo(
-    () => (activeReservation ? products.find((p) => p.id === activeReservation.productId) ?? null : null),
+    () =>
+      activeReservation
+        ? (products.find((p) => p.id === activeReservation.productId) ?? null)
+        : null,
     [activeReservation, products]
   );
 
@@ -92,9 +92,15 @@ export function CheckoutPage() {
       <div className="min-h-screen bg-iris-bg">
         <StoreHeader />
         <div className="mx-auto max-w-lg px-4 py-20 text-center sm:px-6">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">✓</div>
-          <h1 className="mt-8 text-2xl font-semibold tracking-tight text-iris-text">Thanks — you&apos;re all set</h1>
-          <p className="mt-3 text-sm text-iris-muted">Your order is confirmed. Inventory has been updated.</p>
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">
+            ✓
+          </div>
+          <h1 className="mt-8 text-2xl font-semibold tracking-tight text-iris-text">
+            Thanks — you&apos;re all set
+          </h1>
+          <p className="mt-3 text-sm text-iris-muted">
+            Your order is confirmed. Inventory has been updated.
+          </p>
           <Link
             to="/"
             className="mt-10 inline-flex h-12 items-center justify-center rounded-xl bg-iris-text px-8 text-sm font-semibold text-iris-surface no-underline hover:opacity-90"
@@ -135,17 +141,23 @@ export function CheckoutPage() {
         </div>
 
         <h1 className="mt-8 text-3xl font-semibold tracking-tight text-iris-text">Checkout</h1>
-        <p className="mt-2 text-sm text-iris-muted">Finish payment before your reservation timer ends.</p>
+        <p className="mt-2 text-sm text-iris-muted">
+          Finish payment before your reservation timer ends.
+        </p>
 
         {message && (
-          <p className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{message}</p>
+          <p className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            {message}
+          </p>
         )}
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_380px] lg:items-start">
           <div className="space-y-6">
             <div className="rounded-2xl border border-iris-border bg-iris-surface p-6 shadow-sm">
               <h2 className="text-sm font-semibold text-iris-text">Delivery</h2>
-              <p className="mt-3 text-sm text-iris-muted">Demo store — enter details for display only.</p>
+              <p className="mt-3 text-sm text-iris-muted">
+                Demo store — enter details for display only.
+              </p>
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <FakeField label="Email" />
                 <FakeField label="Full name" />
@@ -157,7 +169,9 @@ export function CheckoutPage() {
 
             <div className="rounded-2xl border border-iris-border bg-iris-surface p-6 shadow-sm">
               <h2 className="text-sm font-semibold text-iris-text">Payment</h2>
-              <p className="mt-3 text-sm text-iris-muted">Simulated step — use the button below to record payment.</p>
+              <p className="mt-3 text-sm text-iris-muted">
+                Simulated step — use the button below to record payment.
+              </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 {["Card", "Apple Pay", "PayPal"].map((x) => (
                   <span
@@ -174,16 +188,24 @@ export function CheckoutPage() {
           <aside className="space-y-6 lg:sticky lg:top-24">
             <div className="overflow-hidden rounded-2xl border border-iris-border bg-iris-surface shadow-sm">
               <div className="border-b border-iris-border bg-teal-50/80 px-5 py-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">Reserved</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">
+                  Reserved
+                </p>
                 <p className="mt-2 text-2xl font-semibold tabular-nums text-iris-text">
                   {formatCountdown(Math.max(0, countdown ?? 0))}
                 </p>
                 <p className="mt-1 text-xs text-teal-900/80">Time left to complete checkout</p>
               </div>
               <div className="flex gap-4 p-5">
-                <img src={product.imageUrl} alt="" className="h-24 w-20 rounded-xl object-cover ring-1 ring-black/5" />
+                <img
+                  src={product.imageUrl}
+                  alt=""
+                  className="h-24 w-20 rounded-xl object-cover ring-1 ring-black/5"
+                />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-teal-700">{product.brand}</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-teal-700">
+                    {product.brand}
+                  </p>
                   <p className="mt-1 font-medium text-iris-text">{product.name}</p>
                   <p className="mt-1 text-sm font-semibold">{formatPrice(product.priceCents)}</p>
                   <p className="mt-1 text-xs text-iris-muted">Qty 1</p>
@@ -192,7 +214,9 @@ export function CheckoutPage() {
               <dl className="space-y-3 border-t border-iris-border px-5 py-4 text-sm">
                 <div className="flex justify-between">
                   <dt className="text-iris-muted">Subtotal</dt>
-                  <dd className="font-medium tabular-nums text-iris-text">{formatPrice(subtotal)}</dd>
+                  <dd className="font-medium tabular-nums text-iris-text">
+                    {formatPrice(subtotal)}
+                  </dd>
                 </div>
                 <div className="flex justify-between">
                   <dt className="text-iris-muted">Shipping</dt>
@@ -200,11 +224,18 @@ export function CheckoutPage() {
                 </div>
                 <div className="flex justify-between border-t border-iris-border pt-3 text-base">
                   <dt className="font-semibold text-iris-text">Total</dt>
-                  <dd className="font-semibold tabular-nums text-iris-text">{formatPrice(total)}</dd>
+                  <dd className="font-semibold tabular-nums text-iris-text">
+                    {formatPrice(total)}
+                  </dd>
                 </div>
               </dl>
               <div className="flex flex-col gap-2 border-t border-iris-border p-5">
-                <button type="button" className="btn-primary h-12 w-full rounded-xl text-base" disabled={busy} onClick={() => void markPaid()}>
+                <button
+                  type="button"
+                  className="btn-primary h-12 w-full rounded-xl text-base"
+                  disabled={busy}
+                  onClick={() => void markPaid()}
+                >
                   {busy ? "Processing…" : "Pay now & confirm"}
                 </button>
                 <button
@@ -217,7 +248,9 @@ export function CheckoutPage() {
                 </button>
               </div>
             </div>
-            <p className="text-center text-xs text-iris-muted">256-bit demo · Your items are held during checkout</p>
+            <p className="text-center text-xs text-iris-muted">
+              256-bit demo · Your items are held during checkout
+            </p>
           </aside>
         </div>
       </main>
@@ -231,7 +264,11 @@ function StepPill({ label, active, done }: { label: string; active?: boolean; do
   return (
     <span
       className={`rounded-full px-3 py-1 ${
-        done ? "bg-emerald-100 text-emerald-800" : active ? "bg-iris-text text-iris-surface" : "bg-iris-surface text-iris-muted ring-1 ring-iris-border"
+        done
+          ? "bg-emerald-100 text-emerald-800"
+          : active
+            ? "bg-iris-text text-iris-surface"
+            : "bg-iris-surface text-iris-muted ring-1 ring-iris-border"
       }`}
     >
       {label}

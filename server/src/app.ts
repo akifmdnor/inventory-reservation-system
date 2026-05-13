@@ -4,7 +4,10 @@ import { loadConfig } from "./config.js";
 import { getPrisma } from "./lib/prisma.js";
 import { createRedis } from "./lib/redis.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-import { PrismaInventoryRepository, PrismaReservationRepository } from "./repositories/prismaRepositories.js";
+import {
+  PrismaInventoryRepository,
+  PrismaReservationRepository
+} from "./repositories/prismaRepositories.js";
 import { createApiRouter } from "./routes/api.js";
 import { InventoryReservationService } from "./services/InventoryReservationService.js";
 import { RedisStockGuard } from "./services/RedisStockGuard.js";
