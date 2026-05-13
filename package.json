@@ -1,0 +1,24 @@
+{
+  "name": "inventory-reservation-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-first inventory reservation with PostgreSQL, Redis guard, and premium ecommerce UI",
+  "workspaces": ["web-client", "server"],
+  "scripts": {
+    "install:all": "npm install",
+    "db:up": "docker compose -f server/docker-compose.yml up -d postgres redis",
+    "db:down": "docker compose -f server/docker-compose.yml down",
+    "docker:up": "docker compose up -d --build",
+    "dev": "concurrently -n web,server -c cyan,magenta \"npm run dev -w web-client\" \"npm run dev -w server\"",
+    "build": "npm run build -w server && npm run build -w web-client",
+    "test": "npm run test -w server",
+    "test:integration": "npm run test:integration -w server",
+    "test:watch": "npm run test:watch -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
