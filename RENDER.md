@@ -19,6 +19,14 @@ In **production**, Express serves **`web-client/dist`** after `npm run build`, s
 3. Set **`VITE_API_BASE`** on **irs-web** when prompted to the public **irs-api** URL (e.g. `https://irs-api.onrender.com`), no trailing slash.
 4. **Redis note:** `irs-redis` uses **`ipAllowList: []`** so only Render’s **private network** can connect. **`REDIS_URL`** on the API is wired from the Key Value instance’s **`connectionString`**. Do not paste a localhost URL in production.
 
+### `ECONNREFUSED` / `[ioredis] Unhandled error event` on Render
+
+That is **Redis**: the API cannot open a TCP connection to **`REDIS_URL`**. Typical fixes:
+
+- On the **API Web Service** → **Environment**, confirm **`REDIS_URL`** exists and is the **internal Key Value** URL (from **Blueprint** / **Link database**), not `redis://localhost:6379` or a value copied from your laptop.
+- The **Key Value** instance and the **API** must be in the **same Render region** and account so private networking applies (see `render.yaml`: both use **`oregon`** unless you change them together).
+- If you created the API **without** the Key Value add-on, add a **Redis/Key Value** instance and set **`REDIS_URL`** to its connection string, or use an external Redis (e.g. Upstash) whose URL is reachable from Render’s outbound network.
+
 ### Commands (monorepo Git root)
 
 | Phase | Command |

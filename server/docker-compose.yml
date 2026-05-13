@@ -1,22 +1,4 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: inventory
-      POSTGRES_PASSWORD: inventory
-      POSTGRES_DB: inventory_reservation
-    ports:
-      - "5434:5432"
-    volumes:
-      - inventory_pg_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U inventory -d inventory_reservation"]
-      interval: 3s
-      timeout: 5s
-      retries: 15
-      start_period: 10s
-
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -25,6 +7,8 @@ services:
       - "6379:6379"
     volumes:
       - inventory_redis_data:/data
+    networks:
+      - irs
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 3s
@@ -38,16 +22,16 @@ services:
     restart: unless-stopped
     ports:
       - "3002:3002"
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: postgresql://inventory:inventory@postgres:5432/inventory_reservation?schema=public
+      # Inside the container, Redis is the compose service — not localhost.
       REDIS_URL: redis://redis:6379
-      PORT: "3002"
       NODE_ENV: production
-      RESERVATION_TTL_SECONDS: "120"
-      DEMO_ROUTES_ENABLED: "1"
+      PORT: "3002"
+    networks:
+      - irs
     depends_on:
-      postgres:
-        condition: service_healthy
       redis:
         condition: service_healthy
     healthcheck:
@@ -63,17 +47,9 @@ services:
       retries: 12
       start_period: 45s
 
-  web:
-    build:
-      context: ..
-      dockerfile: web-client/Dockerfile
-    restart: unless-stopped
-    ports:
-      - "8080:80"
-    depends_on:
-      api:
-        condition: service_healthy
+networks:
+  irs:
+    name: inventory-irs-local
 
 volumes:
-  inventory_pg_data:
   inventory_redis_data:

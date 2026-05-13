@@ -1,5 +1,7 @@
 # Inventory Reservation System
 
+**Live (Render, production-style deploy):** [inventory-reservation-system.onrender.com](https://inventory-reservation-system.onrender.com/)
+
 ## Data model (PostgreSQL)
 
 Core tables from `server/prisma/schema.prisma` (durable state; Redis holds hot counters and TTL keys):
@@ -45,52 +47,64 @@ Local-first inventory and reservations with **PostgreSQL** (source of truth), **
 
 ## Quick start
 
+Copy **`server/.env.example`** to **`server/.env`** if you do not have one yet, then set **`DATABASE_URL`** (PostgreSQL) and **`REDIS_URL`**.
+
 ```bash
 cd inventory-reservation-system
 npm install
-```
-
-Create `server/.env` (local values):
-
-```env
-DATABASE_URL="postgresql://inventory:inventory@localhost:5434/inventory_reservation?schema=public"
-REDIS_URL="redis://localhost:6379"
-PORT=3002
-NODE_ENV=development
-RESERVATION_TTL_SECONDS=120
-DEMO_ROUTES_ENABLED=1
-```
-
-```bash
-npm run db:up
+npm run db:up          # Docker: Redis on localhost:6379
+# server/.env: DATABASE_URL -> your Postgres, REDIS_URL=redis://localhost:6379
 cd server && npx prisma migrate deploy && npx prisma db seed && cd ..
 npm run dev
 ```
 
 - **API:** http://localhost:3002  
 - **UI:** http://localhost:5174 (proxies `/api` to the server)  
-- **Postgres:** localhost:5434  
-- **Redis:** localhost:6379 (Docker image enables `notify-keyspace-events Ex` for hold expiry)
+- **Redis:** localhost:6379 (`npm run db:up` — Docker image enables `notify-keyspace-events Ex` for hold expiry)
 
-`npm run db:up` starts **Postgres and Redis only** (see `server/docker-compose.yml`) so `npm run dev` can bind the API on 3002 without port clashes.
+`npm run db:up` starts **Redis only** (see `server/docker-compose.yml`). Postgres is always whatever **`DATABASE_URL`** in `server/.env` points to.
 
-## Full stack in Docker (UI + API + Postgres + Redis)
+## Full stack in Docker (UI + API + Redis)
 
-Stack files: `server/Dockerfile` (API), `web-client/Dockerfile` (static UI + nginx), and `server/docker-compose.yml` (Postgres, Redis, `api`, `web`). The repo root `docker-compose.yml` includes the server stack for one-command runs.
+**Render** does **not** use Docker Compose; it uses **`render.yaml`** and npm **`render:*`** scripts. Compose here is **local-only**.
+
+### Ports (local Docker)
+
+| | **This repo (Inventory)** | **Spaceship PRMS** (separate repo) |
+|--|---------------------------|-------------------------------------|
+| **nginx / UI** | [http://localhost:8090](http://localhost:8090) | [http://localhost:8091](http://localhost:8091) |
+| **API** | [http://localhost:3002](http://localhost:3002) | [http://localhost:3001](http://localhost:3001) |
+| **Redis** | `localhost:6379` (Compose) | — |
+
+Use **8090 vs 8091** and **3002 vs 3001** so both stacks can run on one machine without port clashes.
+
+Docker files: **`server/Dockerfile`** (API), **`web-client/Dockerfile`** (nginx + static UI). Compose is split by area:
+
+- **`server/docker-compose.yml`** — Redis + API. Defines shared network **`inventory-irs-local`** (so the API hostname **`api`** resolves from the web container).
+- **`web-client/docker-compose.yml`** — nginx **`web`** only; joins that **external** network. Start the **server** stack first, then the **web** stack (or use the root script below).
+
+Postgres is never in Compose: **`DATABASE_URL`** comes from **`server/.env`**.
 
 ```bash
 cd inventory-reservation-system
+# Ensure server/.env exists with a reachable DATABASE_URL before:
 npm run docker:up
-# or: docker compose up -d --build
 ```
 
-- **App (UI + API proxy):** http://localhost:8080  
+Or manually (from repo root):
+
+```bash
+docker compose -f server/docker-compose.yml up -d --build
+docker compose -f web-client/docker-compose.yml up -d --build
+```
+
+- **App (UI + API proxy):** http://localhost:8090  
 - **API direct (optional):** http://localhost:3002  
-- **Postgres:** localhost:5434 · **Redis:** localhost:6379  
+- **Redis:** localhost:6379  
 
 For local development without Docker for Node, use `npm run dev` — Vite on http://localhost:5174 proxies `/api` to `localhost:3002`.
 
-To stop: `docker compose down`
+To stop: **`npm run docker:down`** — or `docker compose -f web-client/docker-compose.yml down` then `docker compose -f server/docker-compose.yml down`.
 
 ## Architecture: Guard and commit
 

@@ -6,9 +6,10 @@
   "workspaces": ["web-client", "server"],
   "scripts": {
     "install:all": "npm install",
-    "db:up": "docker compose -f server/docker-compose.yml up -d postgres redis",
+    "db:up": "docker compose -f server/docker-compose.yml up -d redis",
     "db:down": "docker compose -f server/docker-compose.yml down",
-    "docker:up": "docker compose up -d --build",
+    "docker:up": "docker compose -f server/docker-compose.yml up -d --build && docker compose -f web-client/docker-compose.yml up -d --build",
+    "docker:down": "docker compose -f web-client/docker-compose.yml down && docker compose -f server/docker-compose.yml down",
     "dev": "concurrently -n web,server -c cyan,magenta \"npm run dev -w web-client\" \"npm run dev -w server\"",
     "build": "npm run build -w server && npm run build -w web-client",
     "render:build:api": "npm run build -w server",

@@ -1,0 +1,16 @@
+# Static UI (nginx). Start `server/docker-compose.yml` first so network + `api` host exist.
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: web-client/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    networks:
+      - irs
+
+networks:
+  irs:
+    external: true
+    name: inventory-irs-local
