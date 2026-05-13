@@ -22,9 +22,14 @@ export function InventoryPanel(props: { availability: Availability | null; produ
       <p className="mt-2 text-xs text-iris-muted">{availability.formula}</p>
       <dl className="mt-6 space-y-4">
         {rows.map((r) => (
-          <div key={r.label} className="flex items-center justify-between border-b border-iris-border pb-3 last:border-0">
+          <div
+            key={r.label}
+            className="flex items-center justify-between border-b border-iris-border pb-3 last:border-0"
+          >
             <dt className="text-xs text-iris-muted">{r.label}</dt>
-            <dd className={`text-sm font-semibold tabular-nums ${r.highlight ? "text-teal-700" : "text-iris-text"}`}>
+            <dd
+              className={`text-sm font-semibold tabular-nums ${r.highlight ? "text-teal-700" : "text-iris-text"}`}
+            >
               {r.value}
             </dd>
           </div>

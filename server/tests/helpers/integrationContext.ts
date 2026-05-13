@@ -1,6 +1,9 @@
 import { createRedis } from "../../src/lib/redis.js";
 import { getPrisma } from "../../src/lib/prisma.js";
-import { PrismaInventoryRepository, PrismaReservationRepository } from "../../src/repositories/prismaRepositories.js";
+import {
+  PrismaInventoryRepository,
+  PrismaReservationRepository
+} from "../../src/repositories/prismaRepositories.js";
 import { RedisStockGuard } from "../../src/services/RedisStockGuard.js";
 import { InventoryReservationService } from "../../src/services/InventoryReservationService.js";
 
@@ -24,7 +27,13 @@ export async function createIntegrationContext(ttlSeconds = 120): Promise<Integr
   const guard = new RedisStockGuard(redis);
   const inventory = new PrismaInventoryRepository(prisma);
   const reservations = new PrismaReservationRepository(prisma);
-  const service = new InventoryReservationService(prisma, inventory, reservations, guard, ttlSeconds);
+  const service = new InventoryReservationService(
+    prisma,
+    inventory,
+    reservations,
+    guard,
+    ttlSeconds
+  );
   await service.reconcileAllProducts();
 
   return {

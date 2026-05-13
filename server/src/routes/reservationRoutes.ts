@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+import { reserveFailureToHttp } from "../lib/reserveFailureToHttp.js";
 import type { InventoryReservationService } from "../services/InventoryReservationService.js";
 
 const reserveBody = z.object({
@@ -20,8 +21,7 @@ export function createReservationRoutes(service: InventoryReservationService): R
         quantity: body.quantity
       });
       if (!result.ok) {
-        const status = result.code === "NOT_FOUND" ? 404 : 409;
-        return res.status(status).json({ error: result.code, message: result.message });
+        throw reserveFailureToHttp(result);
       }
       res.status(201).json({
         reservationId: result.reservationId,

@@ -1,10 +1,14 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import { DomainError } from "../domain/ReservationAggregate.js";
+import { HttpError, problemJson } from "../lib/httpError.js";
 
 export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
+  if (err instanceof HttpError) {
+    return problemJson(res, err.status, err.code, err.message, err.details);
+  }
   if (err instanceof ZodError) {
-    return res.status(400).json({ error: "BAD_REQUEST", issues: err.flatten() });
+    return problemJson(res, 400, "BAD_REQUEST", "Validation failed", err.flatten());
   }
   if (err instanceof DomainError) {
     const status =
@@ -15,9 +19,8 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
           : err.code === "IMMUTABLE"
             ? 409
             : 400;
-    return res.status(status).json({ error: err.code, message: err.message });
+    return problemJson(res, status, err.code, err.message);
   }
-  const message = err instanceof Error ? err.message : "Internal error";
-  console.error("[error]", err);
-  return res.status(500).json({ error: "INTERNAL", message });
+  console.error("[inventory]", err);
+  return problemJson(res, 500, "INTERNAL_ERROR", "Internal Server Error");
 }

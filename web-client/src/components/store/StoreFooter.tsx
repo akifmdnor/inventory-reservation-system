@@ -7,7 +7,9 @@ export function StoreFooter() {
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-iris-text">Everest Supply</p>
-            <p className="mt-2 max-w-xs text-sm text-iris-muted">Demo storefront with live inventory. Not a real merchant.</p>
+            <p className="mt-2 max-w-xs text-sm text-iris-muted">
+              Demo storefront with live inventory. Not a real merchant.
+            </p>
           </div>
           <div className="flex flex-wrap gap-8 text-sm">
             <div>
@@ -22,7 +24,9 @@ export function StoreFooter() {
             </div>
           </div>
         </div>
-        <p className="mt-10 text-center text-xs text-iris-muted">© {new Date().getFullYear()} Everest Supply · demo environment</p>
+        <p className="mt-10 text-center text-xs text-iris-muted">
+          © {new Date().getFullYear()} Everest Supply · demo environment
+        </p>
       </div>
     </footer>
   );

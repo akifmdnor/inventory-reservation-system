@@ -1,6 +1,10 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 import { LedgerKind, ReservationStatus } from "@prisma/client";
-import type { AvailabilitySnapshot, IInventoryRepository, IReservationRepository } from "./interfaces.js";
+import type {
+  AvailabilitySnapshot,
+  IInventoryRepository,
+  IReservationRepository
+} from "./interfaces.js";
 
 export class PrismaInventoryRepository implements IInventoryRepository {
   constructor(private readonly db: PrismaClient) {}
@@ -75,17 +79,21 @@ export class PrismaReservationRepository implements IReservationRepository {
   }
 
   markConfirmed(id: string, at: Date) {
-    return this.db.reservation.update({
-      where: { id },
-      data: { status: ReservationStatus.CONFIRMED, confirmedAt: at }
-    }).then(() => undefined);
+    return this.db.reservation
+      .update({
+        where: { id },
+        data: { status: ReservationStatus.CONFIRMED, confirmedAt: at }
+      })
+      .then(() => undefined);
   }
 
   markCancelled(id: string, at: Date) {
-    return this.db.reservation.update({
-      where: { id },
-      data: { status: ReservationStatus.CANCELLED, cancelledAt: at }
-    }).then(() => undefined);
+    return this.db.reservation
+      .update({
+        where: { id },
+        data: { status: ReservationStatus.CANCELLED, cancelledAt: at }
+      })
+      .then(() => undefined);
   }
 
   markExpired(id: string, _at: Date) {

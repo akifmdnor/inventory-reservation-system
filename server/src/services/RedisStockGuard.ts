@@ -114,7 +114,11 @@ export class RedisStockGuard {
   }
 
   async confirmDropHold(reservationId: string) {
-    const out = (await this.redis.eval(LUA_CONFIRM_DROP_HOLD, 1, this.holdKey(reservationId))) as number[];
+    const out = (await this.redis.eval(
+      LUA_CONFIRM_DROP_HOLD,
+      1,
+      this.holdKey(reservationId)
+    )) as number[];
     return out[0] === 1;
   }
 

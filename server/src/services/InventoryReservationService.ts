@@ -46,7 +46,11 @@ export class InventoryReservationService {
     return this.inventory.listProducts();
   }
 
-  async reserve(input: { productId: string; userLabel: string; quantity: number }): Promise<ReserveResult> {
+  async reserve(input: {
+    productId: string;
+    userLabel: string;
+    quantity: number;
+  }): Promise<ReserveResult> {
     const product = await this.inventory.findProductById(input.productId);
     if (!product) {
       return { ok: false, code: "NOT_FOUND", message: "Product not found" };
@@ -97,7 +101,11 @@ export class InventoryReservationService {
       });
     } catch (e) {
       await this.guard.rollbackReserve(input.productId, reservationId, input.quantity);
-      return { ok: false, code: "PERSIST_FAILED", message: e instanceof Error ? e.message : "Persist failed" };
+      return {
+        ok: false,
+        code: "PERSIST_FAILED",
+        message: e instanceof Error ? e.message : "Persist failed"
+      };
     }
 
     return { ok: true, reservationId, expiresAt };
